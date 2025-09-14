@@ -32,7 +32,7 @@ fun LogoScreen() {
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
-            model = "https://www.dunreeb.com/wp-content/uploads/2020/01/cropped-Dunreeb-Logo.png",
+            model = "https://logo.com/image-cdn/images/kts928pd/production/9fa92ac5a9498502d2707ced798d763fe7490ecc-1600x1026.png",
             contentDescription = "Dunreeb Logo"
         )
     }
