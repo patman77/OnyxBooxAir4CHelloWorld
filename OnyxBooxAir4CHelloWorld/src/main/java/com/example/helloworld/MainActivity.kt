@@ -6,8 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,8 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.helloworld.ui.theme.HelloWorldTheme
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -45,14 +45,15 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LogoScreen() {
     val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
     
     // Logo size in dp
     val logoSizeDp = 200.dp
     val logoSizePx = with(density) { logoSizeDp.toPx() }
     
     // Container dimensions
-    var containerWidth by remember { mutableStateOf(0f) }
-    var containerHeight by remember { mutableStateOf(0f) }
+    var containerWidth by remember { mutableFloatStateOf(0f) }
+    var containerHeight by remember { mutableFloatStateOf(0f) }
     
     // Animation values for position
     val animatedX = remember { Animatable(0f) }
@@ -69,7 +70,7 @@ fun LogoScreen() {
                 containerWidth = size.width.toFloat()
                 containerHeight = size.height.toFloat()
                 
-                // Set initial random position within bounds
+                // Set initial random position within bounds using coroutine
                 if (containerWidth > 0 && containerHeight > 0) {
                     val maxX = containerWidth - logoSizePx
                     val maxY = containerHeight - logoSizePx
@@ -77,8 +78,10 @@ fun LogoScreen() {
                     val initialX = Random.nextFloat() * maxX
                     val initialY = Random.nextFloat() * maxY
                     
-                    animatedX.snapTo(initialX)
-                    animatedY.snapTo(initialY)
+                    coroutineScope.launch {
+                        animatedX.snapTo(initialX)
+                        animatedY.snapTo(initialY)
+                    }
                 }
             }
     ) {
